@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Session Detail</h1>
+
+<p><strong>Project:</strong> {{ session.project.name }}</p>
+<p><strong>Started:</strong> {{ session.start_time }}</p>
+<p><strong>Ended: </strong>{{ session.end_time }}</p>
+<p><strong>Duration: </strong>{{ session.duration }}</p>
+
+<h2>Todos</h2>
+<ul>
+    {% for todo in todos %}
+    <li>
+        {% if todo.completed %}✓{% else %}○{% endif %}
+        {% if todo.completed %}<s>{{ todo.text }}</s>{% else %}{{ todo.text }}{% endif %}
+    </li>
+    {% empty %}
+    <li>No todos for this session. </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'project-detail' session.project.pk %}">Back to Projects</a>
+{% endblock %}
+
+
+

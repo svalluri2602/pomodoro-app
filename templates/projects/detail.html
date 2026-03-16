@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{ project.name}}</h1>
+<p>{{project.description}}</p>
+
+{% if running_session %}
+    <form method="post" action = "{%url 'stop-session' running_session.pk %}">
+
+    {% csrf_token %}
+    <button type="submit">Stop Session</button>
+    </form>
+
+{% else %}
+<form method = "post" action="{% url 'start-session' project.pk %}">
+{% csrf_token %}
+<button type = "submit">Start Session</button>
+</form>
+{% endif %}
+
+<h2>Session History</h2>
+<ul>
+    {% for session in sessions %}
+        <li>
+            {{ session.start_time }} — 
+            {% if session.duration %}
+                {{ session.duration }}
+            {% else %}
+                Running...
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No sessions yet.</li>
+    {% endfor %}
+</ul>
+
+{% if running_session %}
+
+<h2> Current Session Todos</h2>
+
+<form method='post' action="{%url 'add-todo' running_session.pk %}">
+{% csrf_token %}
+
+<input type = "text" name="text" placeholder = "Add a todo..." required>
+<button type="submit">Add</button>
+</form>
+
+<ul>
+    {% for todo in todos %}
+    <li>
+        <form method="post" action = "{% url 'toggle-todo' todo.pk %}" style="display:inline">
+            {% csrf_token %}
+            <button type = "submit">{% if todo.completed %}✓{% else %}○{% endif %}</button>
+        </form>
+        {% if todo.completed %}<s>{{todo.text}}</s>{% else %}{{todo.text}}{% endif %}
+        <form method = "post" action = "{% url 'delete-todo' todo.pk %}" style = "display:inline">
+            {% csrf_token %}
+            <button type = "submit">x</button>
+        </form>
+    </li>
+    {% empty %}
+    <li>No Todos yet.</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% for session in sessions %}
+
+<li>
+    <a href="{% url 'session-detail' session.pk %}">
+
+        {{session.start_time}} - 
+        {% if session.duration %}
+            {{ session.duration }}
+        {% else %}
+            Running...
+        {% endif %}
+    </a>
+</li>
+{% empty %}
+<li>No sessions yet.</li>
+{% endfor %}
+
+<a href="{% url 'project-list' %}">Back to Projects</a>
+<a href="{% url 'project-timer' project.pk %}">Open Timer</a>
+{% endblock %}
+
+
+
+
+

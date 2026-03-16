@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<div>
+    <h2>Today</h2>
+    <p>{{ today_total }}</p>
+</div>
+
+<div>
+    <h2>This Week</h2>
+    <p>{{ week_total }}</p>
+</div>
+
+<div>
+    <h2>Streak</h2>
+    <p>{{ streak }} day{{ streak|pluralize }}</p>
+</div>
+
+<div>
+    <h2>Per Project</h2>
+    <ul>
+        {% for item in project_totals %}
+        <li>{{ item.project.name }} — {{ item.total }}</li>
+        {% empty %}
+        <li>No projects yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+<a href="{% url 'export-csv' %}">Download CSV</a>
+
+{% endblock %}
